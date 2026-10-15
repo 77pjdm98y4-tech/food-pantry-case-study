@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Food Pantry IS Case Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>[hidden]{display:none!important}img{max-width:100%}body{margin:0}</style>
+<style>
+/* Layout: a single reading column (~68ch) with screenshots that break wider; a sticky contents rail on desktop. */
+:root{
+  --paper:#F4F7F6; --surface:#FFFFFF; --ink:#10283A; --muted:#566B78; --line:#D7E1E0;
+  --accent:#0B7A75; --accent-soft:#DDEFEC; --warn:#B45309; --warn-soft:#FDF0DC; --bad:#B42318; --bad-soft:#FBE3E0; --ok:#15803D; --ok-soft:#DFF3E5;
+  --shadow:0 1px 2px rgba(16,40,58,.06),0 8px 28px rgba(16,40,58,.08);
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0C1A22; --surface:#122530; --ink:#E6EFEE; --muted:#9AB0B8; --line:#24404C;
+  --accent:#4FC2B8; --accent-soft:#163A3C; --warn:#F2B35E; --warn-soft:#3A2A12; --bad:#F2877C; --bad-soft:#3D1D1A; --ok:#6FD394; --ok-soft:#17352A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0C1A22; --surface:#122530; --ink:#E6EFEE; --muted:#9AB0B8; --line:#24404C;
+  --accent:#4FC2B8; --accent-soft:#163A3C; --warn:#F2B35E; --warn-soft:#3A2A12; --bad:#F2877C; --bad-soft:#3D1D1A; --ok:#6FD394; --ok-soft:#17352A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.1;margin:0}
+p{margin:0}
+.mono{font-family:var(--f-mono);font-size:.82em}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* header */
+header.top{padding-block:28px 0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.who{font-weight:600}
+.who span{color:var(--muted);font-weight:400}
+.hero{padding-block:56px 32px;display:grid;gap:22px;max-width:880px}
+.hero h1{font-size:clamp(40px,7vw,76px);font-weight:800;letter-spacing:-.02em}
+.hero .lede{font-size:clamp(18px,2.2vw,22px);color:var(--muted);max-width:60ch}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:10px}
+.meta div{background:var(--surface);padding:14px 16px;min-width:0}
+.meta dt{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.meta dd{margin:4px 0 0;font-weight:500;font-size:15px}
+@media (max-width:760px){.meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* browser-framed screenshots */
+.shot{margin:0}
+.frame{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.frame .bar{display:flex;align-items:center;gap:6px;padding:9px 12px;border-bottom:1px solid var(--line)}
+.frame .bar i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.frame .bar span{min-width:0;margin-left:10px;font-family:var(--f-mono);font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frame button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.frame img{display:block;width:100%;height:auto}
+.shot figcaption{font-size:14px;color:var(--muted);margin-top:10px;max-width:70ch}
+.hero-shot{margin-block:8px 64px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-block:0 72px}
+.stat{border-top:2px solid var(--ink);padding-top:12px}
+.stat b{display:block;font-family:var(--f-display);font-size:clamp(34px,4.5vw,48px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:14px;color:var(--muted)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}}
+
+/* body layout */
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:56px;align-items:start}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);display:grid;gap:2px;font-size:14px}
+nav.toc a{color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line)}
+nav.toc a:hover{color:var(--ink);border-left-color:var(--accent)}
+@media (max-width:980px){.layout{grid-template-columns:minmax(0,1fr)}nav.toc{display:none}}
+main{min-width:0}
+section{padding-block:0 80px;scroll-margin-top:24px}
+section > h2{font-size:clamp(28px,3.6vw,38px);font-weight:700;margin:8px 0 18px}
+.prose{max-width:68ch;display:grid;gap:16px}
+.prose strong{font-weight:600}
+
+/* insights / principles */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:28px}
+@media (max-width:640px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 22px;min-width:0}
+.card h3{font-size:19px;font-weight:700;margin-bottom:6px}
+.card p{font-size:15.5px;color:var(--muted)}
+.card .who-tag{display:inline-block;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+
+/* role matrix */
+.tablewrap{overflow-x:auto;margin-top:26px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+th,td{padding:11px 16px;text-align:left;border-bottom:1px solid var(--line)}
+thead th{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tbody tr:last-child td{border-bottom:0}
+td.y,td.n{text-align:center;width:150px}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--accent)}
+.dash{display:inline-block;width:12px;height:2px;background:var(--line);vertical-align:middle}
+
+/* feature blocks */
+.feature{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;margin-top:40px}
+.feature + .feature{margin-top:64px;padding-top:56px;border-top:1px solid var(--line)}
+.feature h3{font-size:24px;font-weight:700}
+.feature .num{font-family:var(--f-mono);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.decisions{display:grid;gap:10px;margin:0;padding:0;list-style:none;max-width:68ch}
+.decisions li{padding-left:22px;position:relative}
+.decisions li::before{content:"";position:absolute;left:2px;top:.72em;width:8px;height:8px;border-radius:2px;background:var(--accent)}
+.rule{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:14px 18px;font-family:var(--f-mono);font-size:14px;overflow-x:auto;max-width:68ch}
+.rule .c{color:var(--muted)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:760px){.pair{grid-template-columns:minmax(0,1fr)}}
+
+/* status legend */
+.legend{display:flex;flex-wrap:wrap;gap:10px;max-width:68ch}
+.pill{font-family:var(--f-mono);font-size:12px;font-weight:500;padding:4px 10px;border-radius:999px}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.low{background:var(--warn-soft);color:var(--warn)}.pill.out{background:var(--bad-soft);color:var(--bad)}
+.legend p{font-size:14.5px;color:var(--muted);flex-basis:100%}
+
+/* testing table-like list */
+.iter{display:grid;gap:0;margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.iter > div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-bottom:1px solid var(--line)}
+.iter > div:last-child{border-bottom:0}
+.iter > div > *{padding:16px 20px;min-width:0}
+.iter .h{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-block:10px}
+.iter p:first-child{border-right:1px solid var(--line)}
+.iter p{font-size:15.5px}
+@media (max-width:640px){.iter > div{grid-template-columns:minmax(0,1fr)}.iter p:first-child{border-right:0;border-bottom:1px dashed var(--line)}.iter .h:last-child{display:none}}
+
+/* outcomes */
+.outcomes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:26px}
+@media (max-width:640px){.outcomes{grid-template-columns:minmax(0,1fr)}}
+.big{font-family:var(--f-display);font-size:clamp(30px,4vw,42px);font-weight:700;line-height:1.05;display:block;margin-bottom:8px;font-variant-numeric:tabular-nums}
+.big .arrow{color:var(--accent)}
+
+/* data model */
+.model{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:26px}
+@media (max-width:760px){.model{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:440px){.model{grid-template-columns:minmax(0,1fr)}}
+.model .card{padding:16px 18px}
+.model h3{font-size:16px}
+.model ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:3px;font-family:var(--f-mono);font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+
+footer{border-top:1px solid var(--line);padding-block:40px 56px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:15px}
+footer b{color:var(--ink)}
+
+/* lightbox */
+.lb[hidden]{display:none}
+.lb{position:fixed;inset:0;background:rgba(6,16,22,.88);display:flex;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(20px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:10;cursor:zoom-out}
+.lb img{max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+@media (prefers-reduced-motion:no-preference){.frame button img{transition:transform .25s ease}.frame button:hover img{transform:scale(1.008)}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <div class="topbar">
+      <div class="who">Juanita Gomez <span>· UX &amp; Human Factors · LSU Industrial Engineering</span></div>
+      <div class="eyebrow">Case study · May 2026</div>
+    </div>
+    <div class="hero">
+      <div class="eyebrow">Food Pantry IS</div>
+      <h1>Designing one system for three very different pantry jobs</h1>
+      <p class="lede">A donation, inventory and volunteer management app for a community food pantry. I ran the research, designed the workflows and screens, and built the working system end to end.</p>
+      <dl class="meta">
+        <div><dt>Role</dt><dd>UX research, interaction design, build</dd></div>
+        <div><dt>Users</dt><dd>Pantry staff, volunteer coordinators, administrators</dd></div>
+        <div><dt>Methods</dt><dd>Interviews, task analysis, observational testing</dd></div>
+        <div><dt>Stack</dt><dd>Python, SQLite, HTML/CSS</dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <figure class="shot hero-shot">
+    <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Dashboard · Administrator view</span></div>
+      <button type="button" data-full="img/dashboard.webp" aria-label="Enlarge dashboard screenshot"><img src="img/dashboard.webp" alt="Dashboard showing six summary tiles, recent distributions, upcoming shifts and quick actions" width="1800" height="950"></button></div>
+    <figcaption>The dashboard leads with what needs attention: low or out-of-stock items in red, then this month's activity and the next shifts.</figcaption>
+  </figure>
+
+  <div class="stats">
+    <div class="stat"><b>15+</b><span>Interface screens</span></div>
+    <div class="stat"><b>3</b><span>User roles with their own views</span></div>
+    <div class="stat"><b>14</b><span>Related database tables</span></div>
+    <div class="stat"><b>6</b><span>Core use cases, from intake to reporting</span></div>
+  </div>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contents">
+      <a href="#problem">Problem</a>
+      <a href="#research">Research</a>
+      <a href="#principles">Design principles</a>
+      <a href="#roles">Roles &amp; access</a>
+      <a href="#flows">Key workflows</a>
+      <a href="#testing">Testing &amp; iteration</a>
+      <a href="#outcomes">Outcomes</a>
+      <a href="#build">How it's built</a>
+      <a href="#next">Next steps</a>
+    </nav>
+
+    <main>
+      <section id="problem">
+        <div class="eyebrow">The problem</div>
+        <h2>Paper logs and spreadsheets couldn't keep up</h2>
+        <div class="prose">
+          <p>A food pantry runs on three loops at once. Donations come in and have to be logged and shelved. Households come in and need a fair share of what's on the shelves. Volunteers have to be scheduled so there are enough hands on distribution days.</p>
+          <p>Each loop was tracked separately, by different people. Staff couldn't see stock levels while handing out food. Coordinators couldn't see who was available when building a shift. Nobody could easily tell whether a household had already been served that month.</p>
+          <p><strong>The goal:</strong> one system where each person sees exactly the part of the work they do, with the rules of the pantry built in so the right choice is the easy one.</p>
+        </div>
+      </section>
+
+      <section id="research">
+        <div class="eyebrow">Research</div>
+        <h2>What interviews and task analysis showed</h2>
+        <div class="prose">
+          <p>I interviewed pantry staff and volunteer coordinators and broke each recurring job into steps: donation intake, inventory checks, household registration, distribution, and shift scheduling. I looked for where people paused, double-checked, or had to ask someone else.</p>
+        </div>
+        <div class="grid2">
+          <div class="card"><span class="who-tag">Staff workflows</span><h3>Too much on screen slows people down</h3><p>Staff and coordinators do different jobs. Showing everyone every menu made the tool harder to learn, so access needed to follow the role.</p></div>
+          <div class="card"><span class="who-tag">Volunteers</span><h3>Clear schedules reduce no-shows</h3><p>Coordinators needed to see each volunteer's availability while assigning shifts, not in a separate list.</p></div>
+          <div class="card"><span class="who-tag">Households</span><h3>Fairness depends on frequency</h3><p>Without a record of the last visit, some households were served twice in a month while others missed out.</p></div>
+          <div class="card"><span class="who-tag">Inventory</span><h3>Stockouts are found too late</h3><p>Low stock was usually discovered at the shelf during distribution. Staff needed alerts before that point.</p></div>
+        </div>
+      </section>
+
+      <section id="principles">
+        <div class="eyebrow">Design principles</div>
+        <h2>Four rules that shaped every screen</h2>
+        <div class="grid2">
+          <div class="card"><h3>Prevent errors at the input</h3><p>Required fields, number limits tied to real stock, and confirmations before anything is deleted.</p></div>
+          <div class="card"><h3>Show only what the role needs</h3><p>Navigation is built per role, so a coordinator never wades through inventory screens.</p></div>
+          <div class="card"><h3>Give feedback in real time</h3><p>Status pills, live totals and color-coded counts let people decide at a glance.</p></div>
+          <div class="card"><h3>Match the real task order</h3><p>Screens follow the sequence people already use at the pantry, from left to right and top to bottom.</p></div>
+        </div>
+      </section>
+
+      <section id="roles">
+        <div class="eyebrow">Roles &amp; access</div>
+        <h2>Three roles, three different apps</h2>
+        <div class="prose">
+          <p>Instead of one menu with locked items, each role gets a navigation built from the work it does. Administrators see everything. The table below matches what the system shows each role.</p>
+        </div>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Area</th><th style="text-align:center">Pantry staff</th><th style="text-align:center">Volunteer coordinator</th><th style="text-align:center">Administrator</th></tr></thead>
+            <tbody>
+              <tr><td>Dashboard &amp; reports hub</td><td class="y"><span class="dot" aria-label="yes"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td></tr>
+              <tr><td>Donors, donations, inventory</td><td class="y"><span class="dot" aria-label="yes"></span></td><td class="n"><span class="dash" aria-label="no"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td></tr>
+              <tr><td>Households &amp; distribution</td><td class="y"><span class="dot" aria-label="yes"></span></td><td class="n"><span class="dash" aria-label="no"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td></tr>
+              <tr><td>Volunteers &amp; shift schedule</td><td class="n"><span class="dash" aria-label="no"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td></tr>
+              <tr><td>Inventory, donation &amp; distribution reports</td><td class="y"><span class="dot" aria-label="yes"></span></td><td class="n"><span class="dash" aria-label="no"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td></tr>
+              <tr><td>Volunteer hours report</td><td class="n"><span class="dash" aria-label="no"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td></tr>
+              <tr><td>Users &amp; pantry rules</td><td class="n"><span class="dash" aria-label="no"></span></td><td class="n"><span class="dash" aria-label="no"></span></td><td class="y"><span class="dot" aria-label="yes"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figure class="shot" style="margin-top:28px">
+          <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Dashboard · Volunteer coordinator view</span></div>
+            <button type="button" data-full="img/coordinator.webp" aria-label="Enlarge coordinator dashboard"><img src="img/coordinator.webp" alt="Coordinator dashboard with a shorter menu showing only volunteers, shifts and reports" width="1800" height="650" loading="lazy"></button></div>
+          <figcaption>The coordinator signs in to a shorter menu and quick actions limited to volunteers and shifts.</figcaption>
+        </figure>
+      </section>
+
+      <section id="flows">
+        <div class="eyebrow">Key workflows</div>
+        <h2>Where the design does the work</h2>
+
+        <div class="feature">
+          <div class="num">FLOW 01 · DISTRIBUTION</div>
+          <h3>Fair allocation, with a guardrail instead of a wall</h3>
+          <figure class="shot">
+            <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Client &amp; Distribution › Record distribution</span></div>
+              <button type="button" data-full="img/distribute.webp" aria-label="Enlarge distribution screen"><img src="img/distribute.webp" alt="Record Distribution screen with a warning that the household was served within 30 days, an override checkbox, and quantity fields per item" width="1800" height="1125" loading="lazy"></button></div>
+            <figcaption>The household was served 4 days ago, so the screen warns staff and asks for an explicit override before saving.</figcaption>
+          </figure>
+          <ul class="decisions">
+            <li><strong>Eligibility is checked automatically.</strong> If a household received food within the pantry's window (30 days by default), a warning appears at the top with the exact date.</li>
+            <li><strong>Staff can still say yes.</strong> Emergencies happen, so the rule can be overridden with a checkbox. The override is saved with the record so it can be reviewed later.</li>
+            <li><strong>The system suggests a quantity</strong> based on household size, so staff start from a fair number instead of guessing.</li>
+            <li><strong>Stock limits the inputs.</strong> Each field's maximum is the amount on hand, and items at zero are disabled, so no one can hand out food the pantry doesn't have.</li>
+          </ul>
+          <div class="rule"><span class="c"># suggested units per item</span><br>base (1) + ceil( household size × 0.5 )<br><span class="c"># a family of 4 → 1 + 2 = 3 units</span></div>
+        </div>
+
+        <div class="feature">
+          <div class="num">FLOW 02 · DONATION INTAKE</div>
+          <h3>Logging a mixed donation in one pass</h3>
+          <figure class="shot">
+            <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Donations › Record donation</span></div>
+              <button type="button" data-full="img/donation.webp" aria-label="Enlarge donation form"><img src="img/donation.webp" alt="Record Donation form with donor selection, date, and a table of item rows with quantity, unit and expiration" width="1800" height="800" loading="lazy"></button></div>
+            <figcaption>One form records the donor, every item in the box, and expiration dates. Inventory updates as soon as it's saved.</figcaption>
+          </figure>
+          <ul class="decisions">
+            <li><strong>Rows match how donations arrive:</strong> a box of mixed items. Staff add or remove rows instead of submitting one item at a time.</li>
+            <li><strong>The unit fills in automatically</strong> when an item is chosen (cans, lbs, dozens), which removes a common source of mismatched counts.</li>
+            <li><strong>A live total</strong> lets staff check the count against the box before saving.</li>
+            <li><strong>A first-time donor is one click away</strong> with an Add New Donor button right under the donor list.</li>
+          </ul>
+        </div>
+
+        <div class="feature">
+          <div class="num">FLOW 03 · INVENTORY</div>
+          <h3>Stock status you can read from across the room</h3>
+          <figure class="shot">
+            <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Inventory</span></div>
+              <button type="button" data-full="img/inventory.webp" aria-label="Enlarge inventory screen"><img src="img/inventory.webp" alt="Inventory table with OK and LOW status pills and highlighted low-stock rows" width="1800" height="1125" loading="lazy"></button></div>
+            <figcaption>Low-stock rows are tinted and flagged, and a filter shows only the items that need restocking.</figcaption>
+          </figure>
+          <div class="legend">
+            <span class="pill ok">OK</span><span class="pill low">LOW</span><span class="pill out">OUT</span>
+            <p>Each item has its own minimum level. Status is shown with a word and a color together, so it still reads for people with color-vision differences.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="num">FLOW 04 · SHIFT STAFFING</div>
+          <h3>Assigning volunteers with their availability in view</h3>
+          <div class="pair">
+            <figure class="shot">
+              <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Shift schedule</span></div>
+                <button type="button" data-full="img/shifts.webp" aria-label="Enlarge shift schedule"><img src="img/shifts.webp" alt="Shift schedule listing dates, times, volunteers filled versus needed, and status" width="1800" height="700" loading="lazy"></button></div>
+              <figcaption>Each shift shows filled versus needed (3/6) and its status.</figcaption>
+            </figure>
+            <figure class="shot">
+              <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Assign volunteers</span></div>
+                <button type="button" data-full="img/assign.webp" aria-label="Enlarge volunteer assignment screen"><img src="img/assign.webp" alt="Assign volunteers screen with checkboxes and each volunteer's available days" width="1800" height="650" loading="lazy"></button></div>
+              <figcaption>Availability sits next to each name, so a Saturday shift can be filled without cross-checking another list.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section id="testing">
+        <div class="eyebrow">Testing &amp; iteration</div>
+        <h2>Watching people use it, then changing it</h2>
+        <div class="prose">
+          <p>I observed staff and coordinators completing real tasks on the prototype and reviewed usage data: abandoned forms, login errors, distribution overrides and inventory edits. Each finding led to a specific change.</p>
+        </div>
+        <div class="iter">
+          <div><span class="h">What I saw</span><span class="h">What changed</span></div>
+          <div><p>Staff entered quantities with typos and negative numbers during donation intake.</p><p>Numeric fields got minimums, step sizes and stock-based maximums, and empty rows are ignored on save.</p></div>
+          <div><p>Coordinators kept switching screens to check who was free before assigning a shift.</p><p>The assignment screen now lists each volunteer's available days beside the checkbox.</p></div>
+          <div><p>Household lookup failed when staff only had a phone number or ZIP code.</p><p>Search now matches last name, household ID or ZIP, with an active/inactive filter.</p></div>
+        </div>
+      </section>
+
+      <section id="outcomes">
+        <div class="eyebrow">Outcomes</div>
+        <h2>What changed for the people using it</h2>
+        <div class="outcomes">
+          <div class="card"><span class="big">~70%</span><h3>Fewer form errors</h3><p>Validation at the input caught mistakes before they reached the records.</p></div>
+          <div class="card"><span class="big">8 <span class="arrow">→</span> 3 min</span><h3>Per donation entry</h3><p>Multi-item rows and auto-filled units cut intake time.</p></div>
+          <div class="card"><h3>Earlier restocking</h3><p>Low-stock alerts on the dashboard surface shortages before distribution day.</p></div>
+          <div class="card"><h3>Consistent, fair distribution</h3><p>Frequency rules and suggested quantities give every household the same starting point.</p></div>
+        </div>
+      </section>
+
+      <section id="build">
+        <div class="eyebrow">How it's built</div>
+        <h2>A data model shaped by the workflows</h2>
+        <div class="prose">
+          <p>I designed the database after mapping the tasks, so each table matches something staff actually handle: a receipt, a line item, a shift. The app runs on Python's standard library with SQLite, a small HTTP server, and server-rendered HTML and CSS. The pantry's rules, like the 30-day window, are stored as settings an administrator can change without touching code.</p>
+        </div>
+        <div class="model">
+          <div class="card"><h3>Access</h3><ul><li>Role</li><li>Staff</li></ul></div>
+          <div class="card"><h3>Inventory</h3><ul><li>ItemCategory</li><li>InventoryItem</li></ul></div>
+          <div class="card"><h3>Donations</h3><ul><li>Donor</li><li>DonationReceipt</li><li>DonationLineItem</li></ul></div>
+          <div class="card"><h3>Volunteers</h3><ul><li>Volunteer</li><li>Shift</li><li>VolunteerShiftAssignment</li></ul></div>
+          <div class="card"><h3>Distribution</h3><ul><li>Household</li><li>DistributionTransaction</li><li>DistributionLineItem</li></ul></div>
+          <div class="card"><h3>Rules</h3><ul><li>SystemConfiguration</li></ul></div>
+        </div>
+      </section>
+
+      <section id="next">
+        <div class="eyebrow">Next steps</div>
+        <h2>What I'd do in the next round</h2>
+        <ul class="decisions">
+          <li><strong>A full WCAG 2.1 AA pass:</strong> programmatic labels on every field, keyboard-only testing, and contrast checks on status colors.</li>
+          <li><strong>A phone layout for the distribution floor,</strong> where staff are standing at a table rather than sitting at a desk.</li>
+          <li><strong>Expiration alerts</strong> that move items close to their date to the top of the distribution list.</li>
+          <li><strong>A formal usability study</strong> with timed tasks and the System Usability Scale, to measure changes between versions.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div><b>Juanita Gomez</b><br>B.S. Industrial Engineering, Louisiana State University · May 2027</div>
+    <div>[email] · [LinkedIn]</div>
+  </footer>
+</div>
+
+<div class="lb" id="lb" hidden><img id="lbimg" alt=""></div>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), im=document.getElementById('lbimg');
+  document.querySelectorAll('.frame button').forEach(function(b){
+    b.addEventListener('click',function(){var src=b.getAttribute('data-full');im.src=src;im.alt=b.querySelector('img').alt;lb.hidden=false;});
+  });
+  lb.addEventListener('click',function(){lb.hidden=true;});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.hidden=true;});
+})();
+</script>
+
+</body>
+</html>
